@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	etc_starter_gorm "github.com/bitwormhole/starter-gorm/etc"
+	etc_demo "github.com/bitwormhole/starter-gorm/demo/etc"
 	"github.com/bitwormhole/starter/application"
 	"github.com/bitwormhole/starter/application/config"
 )
@@ -16,7 +16,7 @@ var resources embed.FS
 func main() {
 	builder := config.NewBuilderFS(&resources, "src/main/resources")
 
-	etc_starter_gorm.Config(builder)
+	etc_demo.Config(builder)
 
 	err := tryMain(builder)
 	if err != nil {
