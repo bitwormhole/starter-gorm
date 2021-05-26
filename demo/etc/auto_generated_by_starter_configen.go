@@ -2,7 +2,7 @@
 package etc
 
 import(
-	data_5df53416 "github.com/bitwormhole/starter-gorm/data"
+	datasource_877e7cce "github.com/bitwormhole/starter-gorm/datasource"
 	application "github.com/bitwormhole/starter/application"
 	config "github.com/bitwormhole/starter/application/config"
 	lang "github.com/bitwormhole/starter/lang"
@@ -17,33 +17,33 @@ func Config(cb application.ConfigBuilder) error {
 		Scope: application.ScopeSingleton,
 		Aliases: []string{},
 		OnNew: func() lang.Object {
-		    return &data_5df53416.DBDriverRegistrar{}
+		    return &datasource_877e7cce.DriverRegistrar{}
 		},
 		OnInject: func(obj lang.Object,context application.Context) error {
-		    target := obj.(*data_5df53416.DBDriverRegistrar)
+		    target := obj.(*datasource_877e7cce.DriverRegistrar)
 		    return _gorm_db_drivers(target,context)
 		},
     })
 
     // _gorm_starter
     cb.AddComponent(&config.ComInfo{
-		ID: "_gorm_starter",
+		ID: "db1",
 		Class: "",
 		Scope: application.ScopeSingleton,
 		Aliases: []string{},
 		OnNew: func() lang.Object {
-		    return &data_5df53416.GormStarter{}
+		    return &datasource_877e7cce.GormDataSource{}
 		},
 		OnInit: func(obj lang.Object) error {
-		    target := obj.(*data_5df53416.GormStarter)
+		    target := obj.(*datasource_877e7cce.GormDataSource)
 		    return target.Open()
 		},
 		OnDestroy: func(obj lang.Object) error {
-		    target := obj.(*data_5df53416.GormStarter)
+		    target := obj.(*datasource_877e7cce.GormDataSource)
 		    return target.Close()
 		},
 		OnInject: func(obj lang.Object,context application.Context) error {
-		    target := obj.(*data_5df53416.GormStarter)
+		    target := obj.(*datasource_877e7cce.GormDataSource)
 		    return _gorm_starter(target,context)
 		},
     })

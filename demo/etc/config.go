@@ -1,37 +1,33 @@
 package etc
 
 import (
-	"errors"
-
-	"github.com/bitwormhole/starter-gorm/data"
-	"github.com/bitwormhole/starter-gorm/data/drivers"
+	"github.com/bitwormhole/starter-gorm/datasource"
+	"github.com/bitwormhole/starter-gorm/mysql"
+	"github.com/bitwormhole/starter-gorm/sqlserver"
 	"github.com/bitwormhole/starter/application"
-	"gorm.io/gorm"
 )
 
-func _gorm_starter(inst *data.GormStarter, ctx application.Context) error {
+func _gorm_starter(inst *datasource.GormDataSource, ctx application.Context) error {
 
 	//[component]
+	//  id=db1
 	//  initMethod=Open
 	//  destroyMethod=Close
 
-	err := inst.Config(&data.GormStarterConfig{
+	err := inst.Config(&datasource.GormStarterConfig{
 		DataSourceName: "demo",
 		Context:        ctx,
 	})
 	return err
 }
 
-func _gorm_db_drivers(inst *data.DBDriverRegistrar, ctx application.Context) error {
+func _gorm_db_drivers(inst *datasource.DriverRegistrar, ctx application.Context) error {
 
 	//[component]
 	//  class= gorm-db-drivers
 
-	mysql_driver := &drivers.MySQLDriverAdapter{}
-	mysql_driver.OpenFunc = func(dsn string) (gorm.Dialector, error) {
-		return nil, errors.New("this is a mock driver for mysql")
-	}
-	inst.Register("mysql", mysql_driver)
+	inst.Register("mysql", &mysql.Driver{})
+	inst.Register("sqlserver", &sqlserver.Driver{})
 
 	return nil
 }
