@@ -53,9 +53,10 @@ func (inst *GormDataSource) loadParams(dsName string, in application.Injector) (
 	params.Database = in.GetPropertyString(prefix+"database", "[db_name]")
 	params.Username = in.GetPropertyString(prefix+"username", "[user_name]")
 	params.Password = in.GetPropertyString(prefix+"password", "[password]")
-	// params.URL = in.GetPropertyString(prefix+"url", "[db_url]")
 	params.Host = in.GetPropertyString(prefix+"host", "[host_name]")
 	params.Port = in.GetPropertyInt(prefix+"port", 0)
+	params.TableNamePrefix = in.GetPropertyString(prefix+"tablenameprefix", "")
+	params.TableNameSuffix = in.GetPropertyString(prefix+"tablenamesuffix", "")
 
 	return params, nil
 }

@@ -4,7 +4,10 @@ import "gorm.io/gorm"
 
 type Configuration struct {
 	// URL      string
-	Name     string // the name of DataSource
+	Name            string // the name of DataSource
+	TableNamePrefix string
+	TableNameSuffix string
+
 	Host     string
 	Port     int
 	Driver   string
