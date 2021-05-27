@@ -1,4 +1,4 @@
-module github.com/bitwormhole/starter-gorm/datasource
+module github.com/bitwormhole/starter-gorm
 
 go 1.16
 
