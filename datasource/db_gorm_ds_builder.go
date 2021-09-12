@@ -4,29 +4,31 @@ import "gorm.io/gorm"
 
 ////////////////////////////////////////////////////////////////////////////////
 
+// GormDataSourceBuilder 数据源创建者
 type GormDataSourceBuilder struct {
 	// DSN       string
 	Dialector gorm.Dialector
-	Config1   *Configuration
-	Config2   *gorm.Config
+	Config1   Configuration
+	Config2   gorm.Config
 }
 
-func (inst *GormDataSourceBuilder) Create() (Source, error) {
+// Open 打开数据源
+func (inst *GormDataSourceBuilder) Open() (Source, error) {
 	src := &innerGormDataSource{}
-	return src.init(inst)
+	return src.open(inst)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 type innerGormDataSource struct {
 	db   *gorm.DB
-	conf *Configuration
+	conf Configuration
 	name string
 }
 
-func (inst *innerGormDataSource) init(builder *GormDataSourceBuilder) (Source, error) {
+func (inst *innerGormDataSource) open(builder *GormDataSourceBuilder) (Source, error) {
 
-	db, err := gorm.Open(builder.Dialector, builder.Config2)
+	db, err := gorm.Open(builder.Dialector, &builder.Config2)
 	if err != nil {
 		return nil, err
 	}
@@ -42,14 +44,18 @@ func (inst *innerGormDataSource) DB() *gorm.DB {
 }
 
 func (inst *innerGormDataSource) Configuration() *Configuration {
-	src := inst.conf
 	dst := &Configuration{}
-	*dst = *src
+	*dst = inst.conf
 	return dst
 }
 
 func (inst *innerGormDataSource) Name() string {
 	return inst.name
+}
+
+func (inst *innerGormDataSource) Close() error {
+	inst.db = nil
+	return nil
 }
 
 ////////////////////////////////////////////////////////////////////////////////

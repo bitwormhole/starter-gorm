@@ -2,45 +2,52 @@ package datasource
 
 import (
 	"errors"
+
+	"github.com/bitwormhole/starter/markup"
 )
 
 ////////////////////////////////////////////////////////////////////////////////
 
-type DriverRegistrar struct {
-	drivers map[string]Driver
+// DriverManager 是驱动管理器
+type DriverManager struct {
+	markup.Component `id:"gorm-driver-manager"`
+	Drivers          []Driver `inject:".gorm-datasource-driver"`
 }
 
-func (inst *DriverRegistrar) _try_init() Drivers {
-	if inst.drivers == nil {
-		inst.drivers = make(map[string]Driver)
-	}
+func (inst *DriverManager) _Impl() Drivers {
 	return inst
 }
 
-func (inst *DriverRegistrar) Register(name string, driver Driver) {
-	inst._try_init()
-	if driver == nil {
-		return
+func (inst *DriverManager) list() []Driver {
+	list := inst.Drivers
+	if list == nil {
+		list = make([]Driver, 0)
 	}
-	inst.drivers[name] = driver
+	return list
 }
 
-func (inst *DriverRegistrar) GetDriverByName(name string) (Driver, error) {
-	inst._try_init()
-	driver := inst.drivers[name]
-	if driver == nil {
-		return nil, errors.New("no gorm driver with name:" + name)
+// FindDriver 根据配置查找驱动
+func (inst *DriverManager) FindDriver(cfg *Configuration) (Driver, error) {
+	if cfg == nil {
+		return nil, errors.New("cfg==nil")
 	}
-	return driver, nil
+	all := inst.list()
+	for _, driver := range all {
+		if driver.Accept(cfg) {
+			return driver, nil
+		}
+	}
+	return nil, errors.New("no gorm driver with name:" + cfg.Driver)
 }
 
-func (inst *DriverRegistrar) Open(cfg *Configuration) (Source, error) {
+// Open 打开数据源
+func (inst *DriverManager) Open(cfg *Configuration) (Source, error) {
 
 	if cfg == nil {
 		return nil, errors.New("cfg==nil")
 	}
 
-	driver, err := inst.GetDriverByName(cfg.Driver)
+	driver, err := inst.FindDriver(cfg)
 	if err != nil {
 		return nil, err
 	}
