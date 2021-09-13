@@ -11,7 +11,7 @@ import (
 // DriverManager 是驱动管理器
 type DriverManager struct {
 	markup.Component `id:"gorm-driver-manager"`
-	Drivers          []Driver `inject:".gorm-datasource-driver"`
+	Drivers          []Driver `inject:"*"`
 }
 
 func (inst *DriverManager) _Impl() Drivers {

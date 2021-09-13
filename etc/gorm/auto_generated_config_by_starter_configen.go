@@ -193,7 +193,11 @@ type comFactory4pComDriverManager struct {
 func (inst * comFactory4pComDriverManager) init() application.ComponentFactory {
 
 	
-	inst.mDriversSelector = config.NewInjectionSelector(".gorm-datasource-driver",nil)
+	inst.mDriversSelector = config.NewInjectionSelector("*",func(name string, holder application.ComponentHolder) bool {
+            pt := holder.GetPrototype()
+            _, ok := pt.(datasource0x68a737.Driver)
+            return ok
+        })
 
 
 	inst.mPrototype = inst.newObject()

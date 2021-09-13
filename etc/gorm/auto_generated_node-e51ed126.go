@@ -27,7 +27,7 @@ type pComConfiguration struct {
 type pComDriverManager struct {
 	instance *datasource0x68a737.DriverManager
 	 markup0x23084a.Component `id:"gorm-driver-manager"`
-	Drivers []datasource0x68a737.Driver `inject:".gorm-datasource-driver"`
+	Drivers []datasource0x68a737.Driver `inject:"*"`
 }
 
 
