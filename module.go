@@ -11,8 +11,8 @@ import (
 
 const (
 	myName     = "github.com/bitwormhole/starter-gorm"
-	myVersion  = "v0.0.6"
-	myRevision = 6
+	myVersion  = "v0.0.7"
+	myRevision = 7
 )
 
 // Module 定义要导出的模块，外部使用请访问【startergorm.Module()】
