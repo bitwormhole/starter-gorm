@@ -4,31 +4,30 @@ import (
 	"embed"
 
 	"github.com/bitwormhole/starter"
-	"github.com/bitwormhole/starter-gorm/etc/gorm"
+	"github.com/bitwormhole/starter-gorm/gen/cfgstartergorm"
 	"github.com/bitwormhole/starter/application"
 	"github.com/bitwormhole/starter/collection"
 )
 
 const (
-	myName     = "github.com/bitwormhole/starter-gorm"
-	myVersion  = "v0.0.7"
-	myRevision = 7
+	theModuleName     = "github.com/bitwormhole/starter-gorm"
+	theModuleVersion  = "v0.0.8"
+	theModuleRevision = 8
+	theModuleResPath  = "src/main/resources"
 )
+
+//go:embed src/main/resources
+var theModuleResFS embed.FS
 
 // Module 定义要导出的模块，外部使用请访问【startergorm.Module()】
 func Module() application.Module {
 
 	mb := &application.ModuleBuilder{}
-	mb.Name(myName).Version(myVersion).Revision(myRevision)
-	mb.OnMount(gorm.ExportConfig)
-	mb.Resources(myResources())
+	mb.Name(theModuleName).Version(theModuleVersion).Revision(theModuleRevision)
+
+	mb.OnMount(cfgstartergorm.ExportConfig)
+	mb.Resources(collection.LoadEmbedResources(&theModuleResFS, theModuleResPath))
+
 	mb.Dependency(starter.Module())
 	return mb.Create()
-}
-
-//go:embed src/main/resources
-var theResFS embed.FS
-
-func myResources() collection.Resources {
-	return collection.LoadEmbedResources(&theResFS, "src/main/resources")
 }
